@@ -3,6 +3,7 @@ const path = require("path");
 
 const app = express();
 
+// podlaczanie calego folderu z plikami, najczesciej nazwa to public
 app.use(express.static(path.join(__dirname, "/views")));
 
 app.use((req, res, next) => {
@@ -32,6 +33,16 @@ app.get("/history", (req, res) => {
   res.show("history.html");
 });
 
+//Zostaw dla Pawla
+app.use("/home", (res, req) => {
+  res.show("Hello world!");
+}); // pokazuje blad show i send tak samo
+
+app.use("/user", (req, res) => {
+  res.show("login.html");
+}); // pokazuje napis login.html
+
+// Podlaczanie plikow  kazdy z osobna
 // app.get("/style.css", (req, res) => {
 //   res.show("style.css");
 // });
@@ -41,7 +52,7 @@ app.get("/history", (req, res) => {
 // });
 
 app.use((req, res) => {
-  res.status(404).send("404 not found");
+  res.status(404).show("404.png");
 });
 
 app.listen(8000, () => {
