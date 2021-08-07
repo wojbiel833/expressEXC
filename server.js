@@ -1,6 +1,8 @@
 const express = require("express");
 const path = require("path");
 const hbs = require("express-handlebars");
+const multer = require("multer");
+const upload = multer({ dest: "uploads/" });
 
 const app = express();
 
@@ -16,7 +18,7 @@ app.use(express.static(path.join(__dirname, "/views")));
 app.use(express.urlencoded({ extended: false }));
 // Jeśli dodatkowo chcesz odbierać dane w formacie JSON (mogą być wysyłane za pomocą form-data), to również express.json:
 
-// app.use(express.json());
+app.use(express.json());
 
 // MIDDLEWARE dodajacy metode.show
 // app.use((req, res, next) => {
@@ -26,8 +28,16 @@ app.use(express.urlencoded({ extended: false }));
 //   next();
 // });
 
-app.post("/contact/send-message", (req, res) => {
-  res.json(req.body);
+app.post("/contact/send-message", upload.single("image"), (req, res) => {
+  const { author, sender, title, message } = req.body;
+  const file = req.file;
+
+  if (author && sender && title && message && file) {
+    res.render("contact", { isSent: true, filename: file.originalname });
+  } else {
+    res.render("contact", { isError: true });
+  }
+  // res.json(req.body);
 });
 
 app.get("/", (req, res) => {
